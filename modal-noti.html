@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.cookie-text {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.info-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: #f0f0f0;
+    border: 1px solid #999;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 4px;
+    color: #666;
+}
+
+.modal {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    width: 400px;
+    display: none;
+    font-family: Arial, sans-serif;
+}
+
+.modal-header {
+    padding: 8px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+}
+
+.modal-close {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+    padding: 0 4px;
+}
+
+.modal-body {
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.modal-body p {
+    margin: 8px 0;
+}
+</style>
+</head>
+<body>
+<div class="cookie-text">
+    Trình duyệt của bạn cần phải mở chức năng quản lí cookie
+    <span class="info-icon" id="cookieInfo">?</span>
+</div>
+
+<div class="modal" id="cookieModal">
+    <div class="modal-header" id="modalHeader">
+        <div class="modal-title">Hai cookies được dùng bởi site này.</div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+        <p>Cookie chính là session cookie, thường được gọi là MoodleSession. 
+        Bạn phải cho phép cookie này trong trình duyệt của bạn để cung cấp 
+        tính liên tục và bảo trì lần đăng nhập của bạn từ trang này sang trang 
+        khác. Khi bạn đăng xuất hoặc đóng trình duyệt cookie này sẽ bị hủy 
+        (ở trình duyệt của bạn và trên server).</p>
+        
+        <p>Cookie khác được dùng để tăng thêm tính thuận tiện, thường được gọi 
+        là MOODLEID. Nó chỉ nhớ tên đăng nhập của bạn trong trình duyệt. 
+        Điều này có nghĩa là khi bạn quay trở lại site này trường tên đăng nhập 
+        trên trang đăng nhập sẽ được điền vào cho bạn. Nếu muốn an toàn 
+        bạn có thể hủy - khi đó sẽ chỉ phải gõ lại tên đăng nhập của bạn 
+        mỗi lần bạn đăng nhập.</p>
+    </div>
+</div>
+
+<script>
+let isDragging = false;
+let currentX;
+let currentY;
+let initialX;
+let initialY;
+let xOffset = 0;
+let yOffset = 0;
+
+document.getElementById('cookieInfo').addEventListener('click', function(e) {
+    const modal = document.getElementById('cookieModal');
+    modal.style.display = 'block';
+    // Position modal near the click
+    modal.style.left = (e.pageX + 10) + 'px';
+    modal.style.top = (e.pageY + 10) + 'px';
+});
+
+function closeModal() {
+    document.getElementById('cookieModal').style.display = 'none';
+}
+
+document.getElementById('modalHeader').addEventListener('mousedown', dragStart);
+document.addEventListener('mousemove', drag);
+document.addEventListener('mouseup', dragEnd);
+
+function dragStart(e) {
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+
+    if (e.target === document.getElementById('modalHeader')) {
+        isDragging = true;
+    }
+}
+
+function drag(e) {
+    if (isDragging) {
+        e.preventDefault();
+        
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+
+        xOffset = currentX;
+        yOffset = currentY;
+
+        setTranslate(currentX, currentY, document.getElementById('cookieModal'));
+    }
+}
+
+function dragEnd(e) {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+}
+
+function setTranslate(xPos, yPos, el) {
+    el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+}
+</script>
+</body>
+</html>
